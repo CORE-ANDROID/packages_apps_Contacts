@@ -157,9 +157,6 @@
     <!-- Menu item that opens the Options activity for a given contact [CHAR LIMIT=15] -->
     <string name="menu_set_ring_tone">Set ringtone</string>
 
-    <!-- Menu item that opens the Options activity for a given contact [CHAR LIMIT=15] -->
-    <string name="menu_set_vib_ration">Set vibration</string>
-
     <!-- Menu item that opens the Options activity for a given contact [CHAR LIMIT=30] -->
     <string name="menu_redirect_calls_to_vm">All calls to voicemail</string>
 
@@ -664,4 +661,11 @@
 
     <!-- Description when picture in the contact detail view is selected. [CHAR LIMIT=NONE] -->
     <string name="contact_detail_picture_description">Picture. Select to change</string>
+
+    <!-- Hide frequently contacted list -->
+    <string name="display_options_hide_frequent">Hide frequently contacted</string>
+
+    <!-- Hide frequently contacted list summary -->
+    <string name="display_options_hide_frequent_summary">Hides frequently contacted list</string>
+
 </resources>

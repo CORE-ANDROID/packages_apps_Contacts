@@ -181,9 +181,8 @@ public class ContactLoader extends AsyncTaskLoader<Contact> {
 
                 Contacts.PHOTO_URI,
                 Contacts.SEND_TO_VOICEMAIL,
-                Contacts.CUSTOM_RINGTONE,                
+                Contacts.CUSTOM_RINGTONE,
                 Contacts.IS_USER_PROFILE,
-                Contacts.CUSTOM_VIBRATION,
         };
 
         public static final int NAME_RAW_CONTACT_ID = 0;
@@ -256,7 +255,6 @@ public class ContactLoader extends AsyncTaskLoader<Contact> {
         public static final int SEND_TO_VOICEMAIL = 62;
         public static final int CUSTOM_RINGTONE = 63;
         public static final int IS_USER_PROFILE = 64;
-        public static final int CUSTOM_VIBRATION = 65;
     }
 
     /**
@@ -355,15 +353,15 @@ public class ContactLoader extends AsyncTaskLoader<Contact> {
 
     private Contact loadContactEntity(ContentResolver resolver, Uri contactUri) {
         Uri entityUri = Uri.withAppendedPath(contactUri, Contacts.Entity.CONTENT_DIRECTORY);
-        Cursor cursor = resolver.query(entityUri, ContactQuery.COLUMNS, null, null,
-                Contacts.Entity.RAW_CONTACT_ID);
-        if (cursor == null) {
-            Log.e(TAG, "No cursor returned in loadContactEntity");
-            return Contact.forNotFound(mRequestedUri);
-        }
-
+        Cursor cursor = null;
         try {
-            if (!cursor.moveToFirst()) {
+            cursor = resolver.query(entityUri, ContactQuery.COLUMNS, null, null,
+                Contacts.Entity.RAW_CONTACT_ID);
+            if (cursor == null) {
+                Log.e(TAG, "No cursor returned in loadContactEntity");
+                return Contact.forNotFound(mRequestedUri);
+            }
+            if (!cursor.moveToFirst() && (cursor != null)) {
                 cursor.close();
                 return Contact.forNotFound(mRequestedUri);
             }
@@ -406,7 +404,9 @@ public class ContactLoader extends AsyncTaskLoader<Contact> {
 
             return contact;
         } finally {
-            cursor.close();
+            if (cursor != null) {
+                cursor.close();
+            }
         }
     }
 
@@ -516,7 +516,6 @@ public class ContactLoader extends AsyncTaskLoader<Contact> {
                 : cursor.getInt(ContactQuery.CONTACT_PRESENCE);
         final boolean sendToVoicemail = cursor.getInt(ContactQuery.SEND_TO_VOICEMAIL) == 1;
         final String customRingtone = cursor.getString(ContactQuery.CUSTOM_RINGTONE);
-        final String customVibration = cursor.getString(ContactQuery.CUSTOM_VIBRATION);
         final boolean isUserProfile = cursor.getInt(ContactQuery.IS_USER_PROFILE) == 1;
 
         Uri lookupUri;
@@ -530,7 +529,7 @@ public class ContactLoader extends AsyncTaskLoader<Contact> {
         return new Contact(mRequestedUri, contactUri, lookupUri, directoryId, lookupKey,
                 contactId, nameRawContactId, displayNameSource, photoId, photoUri, displayName,
                 altDisplayName, phoneticName, starred, presence, sendToVoicemail,
-                customRingtone, customVibration, isUserProfile);
+                customRingtone, isUserProfile);
     }
 
     /**
@@ -621,13 +620,15 @@ public class ContactLoader extends AsyncTaskLoader<Contact> {
     private void loadDirectoryMetaData(Contact result) {
         long directoryId = result.getDirectoryId();
 
-        Cursor cursor = getContext().getContentResolver().query(
+        Cursor cursor = null;
+        try {
+            cursor = getContext().getContentResolver().query(
                 ContentUris.withAppendedId(Directory.CONTENT_URI, directoryId),
                 DirectoryQuery.COLUMNS, null, null, null);
-        if (cursor == null) {
-            return;
-        }
-        try {
+            if (cursor == null) {
+                return;
+            }
+
             if (cursor.moveToFirst()) {
                 final String displayName = cursor.getString(DirectoryQuery.DISPLAY_NAME);
                 final String packageName = cursor.getString(DirectoryQuery.PACKAGE_NAME);
@@ -651,7 +652,9 @@ public class ContactLoader extends AsyncTaskLoader<Contact> {
                         displayName, directoryType, accountType, accountName, exportSupport);
             }
         } finally {
-            cursor.close();
+            if (cursor != null) {
+                cursor.close();
+            }
         }
     }
 

@@ -87,7 +87,6 @@ public class Contact {
     private byte[] mPhotoBinaryData;
     private final boolean mSendToVoicemail;
     private final String mCustomRingtone;
-    private final String mCustomVibration;
     private final boolean mIsUserProfile;
 
     private final Contact.Status mStatus;
@@ -123,7 +122,6 @@ public class Contact {
         mInvitableAccountTypes = null;
         mSendToVoicemail = false;
         mCustomRingtone = null;
-        mCustomVibration = null;
         mIsUserProfile = false;
     }
 
@@ -142,7 +140,7 @@ public class Contact {
             long id, long nameRawContactId, int displayNameSource, long photoId,
             String photoUri, String displayName, String altDisplayName, String phoneticName,
             boolean starred, Integer presence, boolean sendToVoicemail, String customRingtone,
-            String customVibration, boolean isUserProfile) {
+            boolean isUserProfile) {
         mStatus = Status.LOADED;
         mException = null;
         mRequestedUri = requestedUri;
@@ -166,7 +164,6 @@ public class Contact {
         mInvitableAccountTypes = null;
         mSendToVoicemail = sendToVoicemail;
         mCustomRingtone = customRingtone;
-        mCustomVibration = customVibration;
         mIsUserProfile = isUserProfile;
     }
 
@@ -205,7 +202,6 @@ public class Contact {
         mPhotoBinaryData = from.mPhotoBinaryData;
         mSendToVoicemail = from.mSendToVoicemail;
         mCustomRingtone = from.mCustomRingtone;
-        mCustomVibration = from.mCustomVibration;
         mIsUserProfile = from.mIsUserProfile;
     }
 
@@ -461,10 +457,6 @@ public class Contact {
 
     public String getCustomRingtone() {
         return mCustomRingtone;
-    }
-
-    public String getCustomVibration() {
-        return mCustomVibration;
     }
 
     public boolean isUserProfile() {
